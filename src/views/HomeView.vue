@@ -2,20 +2,15 @@
 import { onMounted, ref } from 'vue'
 
 let loading = ref(false)
-let status = ref([])
-let settings = ref([])
+let data = ref([])
 
 onMounted(async () => {
   loading.value=true
-  const statusResponse = await fetch('http://192.168.1.100/status', {
+  const dataResponse = await fetch('https://shelly-86-eu.shelly.cloud/device/status?id=80646F827174&auth_key=MWRmYzM2dWlkE62C6C4C76F817CE0A3D2902F5B5D4C115E49B28CF8539114D9246505DE5D368D560D06020A92480', {
   })
-  status.value = await statusResponse.json()
-  console.log(status.value)
+  data.value = await dataResponse.json()
+  console.log(data.value)
 
-  const settingsResponse = await fetch('http://192.168.1.100/settings', {
-  })
-  settings.value = await settingsResponse.json()
-  console.log(settings.value)
   loading.value=false
 })
 </script>
@@ -25,25 +20,24 @@ onMounted(async () => {
     <p>loading...</p>
   </div>
   <div v-else>
-    <div v-if="status && settings">
+    <div v-if="data.data && !loading">
       <main>
-        <div v-if="status.wifi_sta">
-          <p>Connectée sur : {{ status.wifi_sta.ssid  ? status.wifi_sta.ssid : 'loading...' }}</p>
-          <p>IP : {{ status.wifi_sta.ip  ? status.wifi_sta.ip : 'loading...' }}</p>
+        <div v-if="data.data.device_status.wifi_sta">
+          <p>Connectée sur : {{ data.data.device_status.wifi_sta.ssid }}</p>
+          <p>IP : {{ data.data.device_status.wifi_sta.ip }}</p>
         </div>
-        <div v-if="status.update && !status.update.new_version">
+        <div v-if="data.data.device_status.update && !data.data.device_status.update.new_version">
           <p>A jour : OUI</p>
         </div>
         <div v-else>
           <p>A jour : NON</p>
         </div>
-        <div v-if="status.cloud">
-          <p>Connecté au cloud : {{ status.cloud.connected  ? status.cloud.connected : 'loading...' }}</p>
-          <!--      <p>A jour : {{ status.wifi_sta.ip  ? status.wifi_sta.ip : 'loading...' }}</p>-->
+        <div v-if="data.data.device_status.cloud">
+          <p>Connecté au cloud : {{ data.data.device_status.cloud.connected }}</p>
         </div>
       </main>
     </div>
-    <div>
+    <div v-else>
       <p>no data</p>
     </div>
   </div>
