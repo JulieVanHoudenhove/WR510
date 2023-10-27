@@ -13,6 +13,23 @@ onMounted(async () => {
 
   loading.value=false
 })
+
+fetch(`https://shelly-86-eu.shelly.cloud/device/relay/control?channel=0&turn=${param}&id=80646F827174&auth_key=MWRmYzM2dWlkE62C6C4C76F817CE0A3D2902F5B5D4C115E49B28CF8539114D9246505DE5D368D560D06020A92480`, {
+  method: 'POST',
+  headers: myHeaders,
+  redirect: 'follow'
+})
+    .then(response => response.json())
+    .catch(error => console.log('error', error));
+function toggle() {
+  data.value.data.device_status.relays[0].ison = !data.value.data.device_status.relays[0].ison
+  let param = data.value.data.device_status.relays[0].ison ? 'on' : 'off'
+
+  let myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+
+}
 </script>
 
 <template>
@@ -35,10 +52,16 @@ onMounted(async () => {
         <div v-if="data.data.device_status.cloud">
           <p>Connecté au cloud : {{ data.data.device_status.cloud.connected }}</p>
         </div>
+        <div v-if="data.data.device_status.relays">
+          <p>Allumée : {{ data.data.device_status.relays[0].ison }}</p>
+        </div>
       </main>
     </div>
     <div v-else>
       <p>no data</p>
+    </div>
+    <div>
+      <button @click="toggle">Toggle</button>
     </div>
   </div>
 </template>
