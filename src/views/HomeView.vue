@@ -6,7 +6,7 @@ let data = ref([])
 
 onMounted(async () => {
   loading.value=true
-  const dataResponse = await fetch('https://shelly-86-eu.shelly.cloud/device/status?id=80646F827174&auth_key=MWRmYzM2dWlkE62C6C4C76F817CE0A3D2902F5B5D4C115E49B28CF8539114D9246505DE5D368D560D06020A92480', {
+  const dataResponse = await fetch('https://shelly-77-eu.shelly.cloud/device/status?id=4022d88e30e8&auth_key=MWNiMjY5dWlk404459961993DCA83AE44BC6E3A6F58906952E7BECA0A5B69DC375C964915ACBC0EA536A0639CB73', {
   })
   data.value = await dataResponse.json()
   console.log(data.value)
@@ -14,13 +14,6 @@ onMounted(async () => {
   loading.value=false
 })
 
-fetch(`https://shelly-86-eu.shelly.cloud/device/relay/control?channel=0&turn=${param}&id=80646F827174&auth_key=MWRmYzM2dWlkE62C6C4C76F817CE0A3D2902F5B5D4C115E49B28CF8539114D9246505DE5D368D560D06020A92480`, {
-  method: 'POST',
-  headers: myHeaders,
-  redirect: 'follow'
-})
-    .then(response => response.json())
-    .catch(error => console.log('error', error));
 function toggle() {
   data.value.data.device_status.relays[0].ison = !data.value.data.device_status.relays[0].ison
   let param = data.value.data.device_status.relays[0].ison ? 'on' : 'off'
@@ -28,7 +21,13 @@ function toggle() {
   let myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
-
+  fetch(`https://shelly-77-eu.shelly.cloud/device/relay/control?channel=0&turn=${param}&id=4022d88e30e8&auth_key=MWNiMjY5dWlk404459961993DCA83AE44BC6E3A6F58906952E7BECA0A5B69DC375C964915ACBC0EA536A0639CB73`, {
+    method: 'POST',
+    headers: myHeaders,
+    redirect: 'follow'
+  })
+      .then(response => response.json())
+      .catch(error => console.log('error', error));
 }
 </script>
 
